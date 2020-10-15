@@ -19,21 +19,47 @@ public class Board {
     }
 
     public static void drawBoard(){
+        String r = "\u001B[31m | \u001B[0m";
         String p = "\u001B[35m | \u001B[0m";
+        String y = "\u001B[33m | \u001B[0m";
+        String c = "\u001B[36m | \u001B[0m";
+        String b = "\u001B[34m | \u001B[0m";
         System.out.println(" " + "-".repeat(18) + "\u001B[31m-\u001B[0m".repeat(5) + "-".repeat(17));
         for(int j = 0; j < 4; j++) System.out.print(" | " + board[0][j]);
-        System.out.print("\u001B[31m | \u001B[0m" + board[0][4] + "\u001B[31m | \u001B[0m");
-        for(int j = 0; j < 4; j++) System.out.print(board[0][j] + " | " );
+        System.out.print(r + board[0][4] + r);
+        for(int j = 5; j < 9; j++) System.out.print(board[0][j] + " | " );
         System.out.println("\n " + "-".repeat(18) + "\u001B[31m-\u001B[0m".repeat(5) + "-".repeat(17));
         for(int j = 0; j < 9; j++) System.out.print(" | " + board[1][j]);
         System.out.print(" | ");
         System.out.println("\n " + "-".repeat(40));
         for(int j = 0; j < 9; j++) System.out.print(" | " + board[2][j]);
         System.out.print(" | ");
-        System.out.println("\n " + "-".repeat(13) + "\u001B[35m-\u001B[0m".repeat(14) + "-".repeat(13));
+        String wpw = "\n " + "-".repeat(13) + "\u001B[35m-\u001B[0m".repeat(14) + "-".repeat(13);
+        System.out.println(wpw);
         for(int j = 0; j < 3; j++) System.out.print(" | " + board[3][j]);
         System.out.print(p + board[3][3] + p + board[3][4] + p + board[3][5] + p);
         for(int j = 6; j < 9; j++) System.out.print(board[3][j] + " | ");
+        String ypg = "\n " + "\u001B[33m-\u001B[0m".repeat(5) + "-".repeat(8) +
+                "\u001B[35m-\u001B[0m".repeat(14) + "-".repeat(9) + "\u001B[36m-\u001B[0m".repeat(4);
+        System.out.println(ypg);
+        System.out.print(y + board[4][0] + y + board[4][1] + " | " + board[4][2] + p + board[4][3] + p + board[4][4] +
+                p + board[4][5] + p + board[4][6] + " | " + board[4][7] + c + board[4][8] + c);
+        System.out.println(ypg);
+        for(int j = 0; j < 3; j++) System.out.print(" | " + board[5][j]);
+        System.out.print(p + board[5][3] + p + board[5][4] + p + board[5][5] + p);
+        for(int j = 6; j < 9; j++) System.out.print(board[5][j] + " | ");
+        System.out.println(wpw);
+        for(int j = 0; j < 9; j++) System.out.print(" | " + board[6][j]);
+        System.out.print(" | ");
+        System.out.println("\n " + "-".repeat(40));
+        for(int j = 0; j < 9; j++) System.out.print(" | " + board[7][j]);
+        System.out.print(" | ");
+        System.out.println("\n " + "-".repeat(18) + "\u001B[34m-\u001B[0m".repeat(5) + "-".repeat(17));
+        for(int j = 0; j < 4; j++) System.out.print(" | " + board[8][j]);
+        System.out.print(b + board[8][4] + b);
+        for(int j = 5; j < 9; j++) System.out.print(board[8][j] + " | " );
+        System.out.println("\n " + "-".repeat(18) + "\u001B[34m-\u001B[0m".repeat(5) + "-".repeat(17) + "");
+
 
 
     }
