@@ -1,17 +1,36 @@
 package com.company;
 
-public class Helper {
+import java.util.*;
 
-    public static final String ANSI_RESET = "\u001B[0m";
-    public static final String ANSI_BLACK = "\u001B[30m";
-    public static final String ANSI_RED = "\u001B[31m";
-    public static final String ANSI_GREEN = "\u001B[32m";
-    public static final String ANSI_YELLOW = "\u001B[33m";
-    public static final String ANSI_BLUE = "\u001B[34m";
-    public static final String ANSI_PURPLE = "\u001B[35m";
-    public static final String ANSI_CYAN = "\u001B[36m";
-    public static final String ANSI_WHITE = "\u001B[37m";
-    public static int one = '①';
-    public static char two = 9313;
+public abstract class Helper {
+    private static final Scanner scan = new Scanner(System.in);
+
+    public static final String reset = "\u001B[0m";
+    public static final String red = "\u001B[31m";
+    public static final String yellow = "\u001B[33m";
+    public static final String blue = "\u001B[34m";
+    public static final String purple = "\u001B[35m";
+    public static final String cyan = "\u001B[36m";
+    private static final String[] temp ={reset, red, yellow, blue, purple, cyan};
+    public static ArrayList<String> colors = new ArrayList<>(Arrays.asList(temp));
+
+
+    //public static int one = '①';
+    //public static char two = 9313;
+
+    //char temp = (char) (Player.players[0].rounds + 65296);
+    //String six = player1.color + temp + "\u001B[0m";
+
+    //char temp2 = (char) (Player.players[0].rounds + 8543);
+    //String VI = player1.color + temp2 + "\u001B[0m";
+
+    public static String enterName(String message){
+        System.out.println(message);
+        return scan.nextLine();
+    }
+
+    public static int action(String action, int currentCoordinate){
+        return 0;
+    }
 
 }

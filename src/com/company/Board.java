@@ -4,21 +4,20 @@ import java.util.*;
 
 public class Board {
 
-    protected static Random rand = new Random();
-    protected static char[][] board;
+    protected  Random rand = new Random();
+    protected  String[][] board;
 
 
     public Board() {
-        board = new char[9][9];
+        board = new String[9][9];
         for(int i = 0; i < 9; i++){
             for(int j = 0; j < 9; j++){
-                board[i][j] = (char) (rand.nextInt(5) + 9312);
+                board[i][j] = String.valueOf((char) (rand.nextInt(5) + 9312));
             }
         }
-        drawBoard();
     }
 
-    public static void drawBoard(){
+    public void drawBoard(){
         String r = "\u001B[31m | \u001B[0m";
         String p = "\u001B[35m | \u001B[0m";
         String y = "\u001B[33m | \u001B[0m";
@@ -59,10 +58,10 @@ public class Board {
         System.out.print(b + board[8][4] + b);
         for(int j = 5; j < 9; j++) System.out.print(board[8][j] + " | " );
         System.out.println("\n " + "-".repeat(18) + "\u001B[34m-\u001B[0m".repeat(5) + "-".repeat(17) + "");
-
-
-
+        placePlayersAndChips();
     }
 
+    public void placePlayersAndChips(){
 
+    }
 }
