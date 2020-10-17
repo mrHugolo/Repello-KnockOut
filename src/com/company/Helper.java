@@ -13,6 +13,9 @@ public abstract class Helper {
     public static final String cyan = "\u001B[36m";
     private static final String[] temp ={reset, red, yellow, blue, purple, cyan};
     public static ArrayList<String> colors = new ArrayList<>(Arrays.asList(temp));
+    //action and tracker needs to be saved in getNumberCoordinates()
+    private static String action = "";
+    private static boolean tracker = true;
 
 
     //public static int one = '①';
@@ -29,8 +32,36 @@ public abstract class Helper {
         return scan.nextLine();
     }
 
-    public static int action(String action, int currentCoordinate){
-        return 0;
+    public static int[] translateCoordinates(int coordinates){
+        int[] xy = new int[2];
+        xy[0] = (coordinates / 10) - 1;
+        xy[1] = (coordinates % 10) - 1;
+        return xy;
+    }
+
+    public static int getNumberCoordinates(String message, int currentCoordinates, int ... number){
+        System.out.println(message);
+        int numberCoordinates = 200;
+        int multiplier = 1;
+        if(number.length != 0) multiplier = number[0];
+        if(tracker)action = scan.nextLine();
+        switch (action) {
+            case "w" -> numberCoordinates = currentCoordinates - 10 * multiplier;
+            case "wd", "dw" -> numberCoordinates = currentCoordinates - 9 * multiplier;
+            case "d" -> numberCoordinates = currentCoordinates + multiplier;
+            case "sd", "ds" -> numberCoordinates = currentCoordinates + 11 * multiplier;
+            case "s" -> numberCoordinates = currentCoordinates + 10 * multiplier;
+            case "sa", "as" -> numberCoordinates = currentCoordinates + 9 * multiplier;
+            case "a" -> numberCoordinates = currentCoordinates - multiplier;
+            case "aw", "wa" -> numberCoordinates = currentCoordinates - 11 * multiplier;
+        }
+        tracker = !tracker;
+        return numberCoordinates >= 200 ? getNumberCoordinates(message, currentCoordinates) : numberCoordinates;
+    }
+
+
+    public void clear(){
+        System.out.println("\n".repeat(30));
     }
 
 }

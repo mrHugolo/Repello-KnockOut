@@ -18,11 +18,14 @@ public class Board {
     }
 
     public void drawBoard(){
+        placePlayersAndChips();
+
         String r = "\u001B[31m | \u001B[0m";
         String p = "\u001B[35m | \u001B[0m";
         String y = "\u001B[33m | \u001B[0m";
         String c = "\u001B[36m | \u001B[0m";
         String b = "\u001B[34m | \u001B[0m";
+
         System.out.println(" " + "-".repeat(18) + "\u001B[31m-\u001B[0m".repeat(5) + "-".repeat(17));
         for(int j = 0; j < 4; j++) System.out.print(" | " + board[0][j]);
         System.out.print(r + board[0][4] + r);
@@ -58,10 +61,25 @@ public class Board {
         System.out.print(b + board[8][4] + b);
         for(int j = 5; j < 9; j++) System.out.print(board[8][j] + " | " );
         System.out.println("\n " + "-".repeat(18) + "\u001B[34m-\u001B[0m".repeat(5) + "-".repeat(17) + "");
-        placePlayersAndChips();
     }
 
     public void placePlayersAndChips(){
+        for(Player player : Player.players){
+            char temp = (char) (player.rounds + 65296);
+            String rounds = player.color + temp + "\u001B[0m";
+            board[Helper.translateCoordinates(player.coordinates)[0]]
+                    [Helper.translateCoordinates(player.coordinates)[1]] = rounds;
+        }
+        for(Chip chip : Chip.chips){
+            board[Helper.translateCoordinates(chip.coordinates)[0]]
+                    [Helper.translateCoordinates(chip.coordinates)[1]] = chip.symbol + "";
+        }
+    }
 
+    public int translateNumber(int coordinates){
+        int[] xy = Helper.translateCoordinates(coordinates);
+        String number = board[xy[0]][xy[1]];
+        char actualNumber = number.charAt(0);
+        return (int) actualNumber - 9311;
     }
 }

@@ -8,7 +8,6 @@ public class Main {
     //XII is the biggest number to fit
 
     public static void main(String[] args) {
-        System.out.println((int) '●');
         new Game();
     }
 }

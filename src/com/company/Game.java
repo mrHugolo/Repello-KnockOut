@@ -3,9 +3,10 @@ package com.company;
 import java.util.*;
 
 public class Game {
+    protected Board b = new Board();
 
     public Game() {
-        Board b = new Board();
+
         decideNames();
         while(true) {
             for(Player player : Player.players) {
@@ -24,7 +25,10 @@ public class Game {
     }
 
     public void decideWhatToDo(Player player){
-
+        new Chip(player.coordinates);
+        int circledNumber = Helper.getNumberCoordinates(player.name + ": It's your turn, enter an action", player.coordinates);
+        int actualNumber = b.translateNumber(circledNumber);
+        player.coordinates = Helper.getNumberCoordinates("", player.coordinates, actualNumber);
     }
 
 
