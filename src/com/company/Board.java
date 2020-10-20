@@ -4,15 +4,20 @@ import java.util.*;
 
 public class Board {
 
-    protected  Random rand = new Random();
-    protected  String[][] board;
+    protected Random rand = new Random();
+    protected String[][] board;
+    protected String[][] boardMemory;
 
 
     public Board() {
+        new Chip(0);
         board = new String[9][9];
+        boardMemory = new String[9][9];
         for(int i = 0; i < 9; i++){
             for(int j = 0; j < 9; j++){
-                board[i][j] = String.valueOf((char) (rand.nextInt(5) + 9312));
+                int randNumber = rand.nextInt(5) + 9312;
+                board[i][j] = String.valueOf((char) (randNumber));
+                boardMemory[i][j] = String.valueOf((char) (randNumber));
             }
         }
     }
@@ -67,19 +72,68 @@ public class Board {
         for(Player player : Player.players){
             char temp = (char) (player.rounds + 65296);
             String rounds = player.color + temp + "\u001B[0m";
-            board[Helper.translateCoordinates(player.coordinates)[0]]
-                    [Helper.translateCoordinates(player.coordinates)[1]] = rounds;
+            board[translateCoordinates(player.coordinates)[0]]
+                    [translateCoordinates(player.coordinates)[1]] = rounds;
         }
         for(Chip chip : Chip.chips){
-            board[Helper.translateCoordinates(chip.coordinates)[0]]
-                    [Helper.translateCoordinates(chip.coordinates)[1]] = chip.symbol + "";
+            board[translateCoordinates(chip.coordinates)[0]]
+                    [translateCoordinates(chip.coordinates)[1]] = chip.symbol + "";
         }
     }
 
+    public boolean lookForTouchingPlayersAndChips(){
+        for(int i = 0; i < 9; i++){
+            for(int j = 0; j < 9; j++){
+                if(!board[i][j].matches("[①②③④⑤]")){
+
+                }
+            }
+        }
+        return true;
+    }
+
     public int translateNumber(int coordinates){
-        int[] xy = Helper.translateCoordinates(coordinates);
-        String number = board[xy[0]][xy[1]];
-        char actualNumber = number.charAt(0);
-        return (int) actualNumber - 9311;
+        int[] xy = translateCoordinates(coordinates);
+        try {
+            String number = board[xy[0]][xy[1]];
+            char actualNumber = number.charAt(0);
+            return (int) actualNumber - 9311;
+        }
+        catch (Exception e){
+            System.out.println("Outside of board");
+        }
+        return 0;
+    }
+
+    public int[] translateCoordinates(int coordinates){
+        int[] xy = new int[2];
+        xy[0] = (coordinates / 10) - 1;
+        xy[1] = (coordinates % 10) - 1;
+        if(xy[0] < 0 || xy[0] > 9 || xy[1] < 0){
+
+        }
+        return xy;
+    }
+
+    public int[] actionToCoordinates(String action, int currentCoordinates, int ... number){
+        int multiplier = number.length == 0 ? 1 : number[0];
+        int numberCoordinate = 200;
+        int[] numberCoordinates = new int[multiplier];
+        for(int i = 1; i <= multiplier; i++) {
+            switch (action) {
+                case "w" -> numberCoordinate = currentCoordinates - 10 * i;
+                case "wd", "dw" -> numberCoordinate = currentCoordinates - 9 * i;
+                case "d" -> numberCoordinate = currentCoordinates + i;
+                case "sd", "ds" -> numberCoordinate = currentCoordinates + 11 * i;
+                case "s" -> numberCoordinate = currentCoordinates + 10 * i;
+                case "sa", "as" -> numberCoordinate = currentCoordinates + 9 * i;
+                case "a" -> numberCoordinate = currentCoordinates - i;
+                case "aw", "wa" -> numberCoordinate = currentCoordinates - 11 * i;
+                default -> numberCoordinate = 200;
+            }
+            numberCoordinates[i - 1] = numberCoordinate;
+        }
+        return numberCoordinate >= 200 ? actionToCoordinates(action, currentCoordinates) : numberCoordinates;
+
     }
 }

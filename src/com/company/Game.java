@@ -25,10 +25,21 @@ public class Game {
     }
 
     public void decideWhatToDo(Player player){
+        String action = Helper.action(player.name + ": Enter an action!");
+        int circledNumberCoordinate = b.actionToCoordinates(action, player.coordinates)[0];
+        int[] temp = b.translateCoordinates(circledNumberCoordinate);
+        String circledNumber = b.board[temp[0]][temp[1]];
+        int[] coordinates = b.actionToCoordinates(action, player.coordinates, (int) circledNumber.charAt(0) - 9311);
+        for(int coordinate : coordinates){
+            int check = b.translateNumber(coordinate);
+            if(check < 1 || check > 5) {
+                decideWhatToDo(player);
+                return;
+            }
+        }
         new Chip(player.coordinates);
-        int circledNumber = Helper.getNumberCoordinates(player.name + ": It's your turn, enter an action", player.coordinates);
-        int actualNumber = b.translateNumber(circledNumber);
-        player.coordinates = Helper.getNumberCoordinates("", player.coordinates, actualNumber);
+        player.coordinates = coordinates[coordinates.length - 1];
+        player.rounds--;
     }
 
 

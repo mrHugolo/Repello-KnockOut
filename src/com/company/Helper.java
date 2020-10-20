@@ -32,35 +32,37 @@ public abstract class Helper {
         return scan.nextLine();
     }
 
-    public static int[] translateCoordinates(int coordinates){
-        int[] xy = new int[2];
-        xy[0] = (coordinates / 10) - 1;
-        xy[1] = (coordinates % 10) - 1;
-        return xy;
-    }
-
-    public static int getNumberCoordinates(String message, int currentCoordinates, int ... number){
+    public static int[] getNumberCoordinates(String message, int currentCoordinates, int ... number){
         System.out.println(message);
         int numberCoordinates = 200;
         int multiplier = 1;
         if(number.length != 0) multiplier = number[0];
         if(tracker)action = scan.nextLine();
-        switch (action) {
-            case "w" -> numberCoordinates = currentCoordinates - 10 * multiplier;
-            case "wd", "dw" -> numberCoordinates = currentCoordinates - 9 * multiplier;
-            case "d" -> numberCoordinates = currentCoordinates + multiplier;
-            case "sd", "ds" -> numberCoordinates = currentCoordinates + 11 * multiplier;
-            case "s" -> numberCoordinates = currentCoordinates + 10 * multiplier;
-            case "sa", "as" -> numberCoordinates = currentCoordinates + 9 * multiplier;
-            case "a" -> numberCoordinates = currentCoordinates - multiplier;
-            case "aw", "wa" -> numberCoordinates = currentCoordinates - 11 * multiplier;
+        int[] coordinates = new int[Math.max(multiplier, 1)];
+        for(int i = 1; i <= multiplier; i++) {
+            switch (action) {
+                case "w" -> numberCoordinates = currentCoordinates - 10 * i;
+                case "wd", "dw" -> numberCoordinates = currentCoordinates - 9 * i;
+                case "d" -> numberCoordinates = currentCoordinates + i;
+                case "sd", "ds" -> numberCoordinates = currentCoordinates + 11 * i;
+                case "s" -> numberCoordinates = currentCoordinates + 10 * i;
+                case "sa", "as" -> numberCoordinates = currentCoordinates + 9 * i;
+                case "a" -> numberCoordinates = currentCoordinates - i;
+                case "aw", "wa" -> numberCoordinates = currentCoordinates - 11 * i;
+            }
+            coordinates[i - 1] = numberCoordinates;
         }
         tracker = !tracker;
-        return numberCoordinates >= 200 ? getNumberCoordinates(message, currentCoordinates) : numberCoordinates;
+        return numberCoordinates >= 200 ? getNumberCoordinates(message, currentCoordinates) : coordinates;
+    }
+
+    public static String action(String message){
+        System.out.println(message);
+        return scan.nextLine();
     }
 
 
-    public void clear(){
+    public static void clear(){
         System.out.println("\n".repeat(30));
     }
 
