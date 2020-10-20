@@ -70,14 +70,14 @@ public class Board {
 
     public void placePlayersAndChips(){
         for(Player player : Player.players){
-            char temp = (char) (player.rounds + 65296);
-            String rounds = player.color + temp + "\u001B[0m";
-            board[translateCoordinates(player.coordinates)[0]]
-                    [translateCoordinates(player.coordinates)[1]] = rounds;
+            if(player.onBoard) {
+                board[translateCoordinates(player.coordinates)[0]]
+                        [translateCoordinates(player.coordinates)[1]] = player.roundsString;
+            }
         }
         for(Chip chip : Chip.chips){
             board[translateCoordinates(chip.coordinates)[0]]
-                    [translateCoordinates(chip.coordinates)[1]] = chip.symbol + "";
+                    [translateCoordinates(chip.coordinates)[1]] = chip.symbol;
         }
     }
 
@@ -92,7 +92,7 @@ public class Board {
         return true;
     }
 
-    public int translateNumber(int coordinates){
+    public int translateNumber(Player player, int coordinates){
         int[] xy = translateCoordinates(coordinates);
         try {
             String number = board[xy[0]][xy[1]];
@@ -101,6 +101,8 @@ public class Board {
         }
         catch (Exception e){
             System.out.println("Outside of board");
+            player.onBoard = false;
+
         }
         return 0;
     }
@@ -109,9 +111,6 @@ public class Board {
         int[] xy = new int[2];
         xy[0] = (coordinates / 10) - 1;
         xy[1] = (coordinates % 10) - 1;
-        if(xy[0] < 0 || xy[0] > 9 || xy[1] < 0){
-
-        }
         return xy;
     }
 
@@ -133,7 +132,37 @@ public class Board {
             }
             numberCoordinates[i - 1] = numberCoordinate;
         }
-        return numberCoordinate >= 200 ? actionToCoordinates(action, currentCoordinates) : numberCoordinates;
+        return numberCoordinates;
 
+    }
+
+    public void playerOfBoard(Player player){
+        player.onBoard = false;
+        player.rounds--;
+        int[] xy = translateCoordinates(player.coordinates);
+        board[xy[0]][xy[1]] = boardMemory [xy[0]][xy[1]];
+        player.coordinates = 100;
+    }
+
+    public void bringPlayerBack(Player player) {
+        while (player.coordinates == 100) {
+            try {
+                int middleNumber = Integer.parseInt(Helper.action("Which purple box would you like to return on? (1-9)"));
+                switch (middleNumber) {
+                    case 1 -> player.coordinates = board[3][3].matches("[①②③④⑤]") ? 44 : 100;
+                    case 2 -> player.coordinates = board[3][4].matches("[①②③④⑤]") ? 45 : 100;
+                    case 3 -> player.coordinates = board[3][5].matches("[①②③④⑤]") ? 46 : 100;
+                    case 4 -> player.coordinates = board[4][3].matches("[①②③④⑤]") ? 54 : 100;
+                    case 5 -> player.coordinates = board[4][4].matches("[①②③④⑤]") ? 55 : 100;
+                    case 6 -> player.coordinates = board[4][5].matches("[①②③④⑤]") ? 56 : 100;
+                    case 7 -> player.coordinates = board[5][3].matches("[①②③④⑤]") ? 64 : 100;
+                    case 8 -> player.coordinates = board[5][4].matches("[①②③④⑤]") ? 65 : 100;
+                    case 9 -> player.coordinates = board[5][5].matches("[①②③④⑤]") ? 66 : 100;
+                }
+            } catch (Exception ignore) {
+            }
+        }
+        player.onBoard = true;
+        drawBoard();
     }
 }
