@@ -41,4 +41,13 @@ public abstract class Helper {
         System.out.println("\n".repeat(30));
     }
 
+    public static String removeFirstChar(String word){
+        String wordWithoutFirstChar = "";
+        for(int i = 1; i < word.length(); i++) wordWithoutFirstChar += word.charAt(i);
+        return wordWithoutFirstChar;
+    }
+
+    public static String revAction(String action) {
+        return action.length() == 1 ? action : "" + action.charAt(1) + action.charAt(0);
+    }
 }

@@ -9,7 +9,7 @@ public class Player {
     protected String color;
     protected String name;
     protected int rounds;
-    private char temp = (char) (rounds + 65296);
+    private char temp;
     protected String roundsString;
     protected int coordinates;
     protected boolean onBoard = true;
@@ -39,10 +39,14 @@ public class Player {
         }
         this.name = color + name + "\u001B[0m";
         rounds = 6;
-        roundsString = color + temp + "\u001B[0m";
         actions = new ArrayList<>();
         players[tracker] = this;
         tracker++;
+    }
+
+    public String getRoundsString(){
+        temp = (char) (rounds + 65296);
+        return color + temp + "\u001B[0m";
     }
 
 }

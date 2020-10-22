@@ -72,24 +72,13 @@ public class Board {
         for(Player player : Player.players){
             if(player.onBoard) {
                 board[translateCoordinates(player.coordinates)[0]]
-                        [translateCoordinates(player.coordinates)[1]] = player.roundsString;
+                        [translateCoordinates(player.coordinates)[1]] = player.getRoundsString();
             }
         }
         for(Chip chip : Chip.chips){
             board[translateCoordinates(chip.coordinates)[0]]
-                    [translateCoordinates(chip.coordinates)[1]] = chip.symbol;
+                    [translateCoordinates(chip.coordinates)[1]] = chip.getSymbol();
         }
-    }
-
-    public boolean lookForTouchingPlayersAndChips(){
-        for(int i = 0; i < 9; i++){
-            for(int j = 0; j < 9; j++){
-                if(!board[i][j].matches("[①②③④⑤]")){
-
-                }
-            }
-        }
-        return true;
     }
 
     public int translateNumber(Player player, int coordinates){
@@ -147,7 +136,7 @@ public class Board {
     public void bringPlayerBack(Player player) {
         while (player.coordinates == 100) {
             try {
-                int middleNumber = Integer.parseInt(Helper.action("Which purple box would you like to return on? (1-9)"));
+                int middleNumber = Integer.parseInt(Helper.action(player.name + ": Which purple box would you like to return on? (1-9)"));
                 switch (middleNumber) {
                     case 1 -> player.coordinates = board[3][3].matches("[①②③④⑤]") ? 44 : 100;
                     case 2 -> player.coordinates = board[3][4].matches("[①②③④⑤]") ? 45 : 100;

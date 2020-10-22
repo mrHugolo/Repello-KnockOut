@@ -20,4 +20,9 @@ public class Chip {
             symbol = "\u001B[32m●\u001B[0m";
         }
     }
+
+    public String getSymbol(){
+        if(chips.indexOf(this) == 0) return symbol;
+        return (char) (10121 + chips.indexOf(this)) +"";
+    }
 }
