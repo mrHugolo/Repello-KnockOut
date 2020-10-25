@@ -152,6 +152,28 @@ public class Board {
             }
         }
         player.onBoard = true;
-        drawBoard();
+    }
+
+    public void bringGoldChipBack(Player player) {
+        Chip c = Chip.chips.get(0);
+        System.out.println("bringGoldChipBackTest");
+        while (c.coordinates == 100) {
+            try {
+                int middleNumber = Integer.parseInt(Helper.action(player.name +
+                        ": Which purple box would you like to return the golden chip on? (1-9)"));
+                switch (middleNumber) {
+                    case 1 -> c.coordinates = board[3][3].matches("[①②③④⑤]") ? 44 : 100;
+                    case 2 -> c.coordinates = board[3][4].matches("[①②③④⑤]") ? 45 : 100;
+                    case 3 -> c.coordinates = board[3][5].matches("[①②③④⑤]") ? 46 : 100;
+                    case 4 -> c.coordinates = board[4][3].matches("[①②③④⑤]") ? 54 : 100;
+                    case 5 -> c.coordinates = board[4][4].matches("[①②③④⑤]") ? 55 : 100;
+                    case 6 -> c.coordinates = board[4][5].matches("[①②③④⑤]") ? 56 : 100;
+                    case 7 -> c.coordinates = board[5][3].matches("[①②③④⑤]") ? 64 : 100;
+                    case 8 -> c.coordinates = board[5][4].matches("[①②③④⑤]") ? 65 : 100;
+                    case 9 -> c.coordinates = board[5][5].matches("[①②③④⑤]") ? 66 : 100;
+                }
+            } catch (Exception ignore) {
+            }
+        }
     }
 }

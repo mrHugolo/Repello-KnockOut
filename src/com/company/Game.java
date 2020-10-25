@@ -8,14 +8,13 @@ public class Game {
     public Game() {
 
         decideNames();
-        while (true) {
+        while (!seeIfSomeoneWon()) {
             for (Player player : Player.players) {
-                b.drawBoard();
                 decideWhatToDo(player);
                 reaction(player);
             }
         }
-
+        System.exit(0);
     }
 
     public void decideNames() {
@@ -26,19 +25,25 @@ public class Game {
     }
 
     public void decideWhatToDo(Player player) {
+        if(seeIfSomeoneWon()) System.exit(0);
         if (!player.onBoard) {
             b.bringPlayerBack(player);
             reaction(player);
         }
+        int chipCoordinates = player.coordinates;
+        Helper.clear();
+        b.drawBoard();
         String action = Helper.action(player.name + ": Enter an action!");
         int circledNumberCoordinate = b.actionToCoordinates(action, player.coordinates)[0];
-        if(circledNumberCoordinate == 200) {
+        System.out.println(circledNumberCoordinate);
+        if (circledNumberCoordinate == 200) {
             decideWhatToDo(player);
             return;
         }
-        new Chip(player.coordinates);
-        player.rounds--;
+
         if (circledNumberCoordinate < 11 || circledNumberCoordinate > 99 || circledNumberCoordinate % 10 == 0) {
+            new Chip(chipCoordinates);
+            player.rounds--;
             b.playerOfBoard(player);
             return;
         }
@@ -47,149 +52,69 @@ public class Game {
         int[] coordinates = b.actionToCoordinates(action, player.coordinates, (int) circledNumber.charAt(0) - 9311);
         for (int coordinate : coordinates) {
             int check = b.translateNumber(player, coordinate);
-            if (check < 1 || check > 5) {
+            System.out.println("Check: " + check);
+            if (check != 0 && (check < 1 || check > 5)) {
                 decideWhatToDo(player);
                 return;
             }
         }
+        new Chip(chipCoordinates);
+        player.rounds--;
         player.coordinates = coordinates[coordinates.length - 1];
-        b.drawBoard();
+        if(player.coordinates < 11 || player.coordinates > 99 || player.coordinates % 10 == 0) b.playerOfBoard(player);
     }
 
-    public boolean reactionActions() {
+    public int reactionActionsHelper(int i, int j) {
         int booleanChecker = 0;
-        for (int i = 0; i < 9; i++) {
-            for (int j = 0; j < 9; j++) {
-                if (!b.board[i][j].matches("[①②③④⑤]")) {
-                    try {
-                        if (!b.board[i - 1][j - 1].matches("[①②③④⑤]")) {
-                            for (Player p : Player.players)
-                                if (b.board[i][j].equals(p.getRoundsString()))
-                                    if (!p.actions.contains("sd")) p.actions.add("sd");
-                            for (Chip c : Chip.chips)
-                                if (b.board[i][j].equals(c.getSymbol())) if (!c.actions.contains("sd")) c.actions.add("sd");
-                            for (Player p : Player.players)
-                                if (b.board[i - 1][j - 1].equals(p.getRoundsString()))
-                                    if (!p.actions.contains("aw")) p.actions.add("aw");
-                            for (Chip c : Chip.chips)
-                                if (b.board[i][j + 1].equals(c.getSymbol()))
-                                    if (!c.actions.contains("aw")) c.actions.add("aw");
+        for (int m = -1; m <= 1; m++) {
+            for (int n = -1; n <= 1; n++) {
+                int x = i + m < 0 ? 0 : Math.min(i + m, 8);
+                int y = j + n < 0 ? 0 : Math.min(j + n, 8);
+                if(x == i && y == j) continue;
+                if (!b.board[x][y].matches("[①②③④⑤]")) {
+                    for (Player p : Player.players) {
+                         if(b.board[i][j].equals(p.getRoundsString())) {
+                             Helper.addIfNotInList(p.actions, Helper.directionToAction(m, n));
+                             booleanChecker = 1;
+                         }
+                    }
+                    for (Chip c : Chip.chips) {
+                        if(b.board[i][j].equals(c.getSymbol())) {
+                            Helper.addIfNotInList(c.actions, Helper.directionToAction(m, n));
                             booleanChecker = 1;
                         }
-                        if (!b.board[i - 1][j].matches("[①②③④⑤]")) {
-                            for (Player p : Player.players)
-                                if (b.board[i][j].equals(p.getRoundsString()))
-                                    if (!p.actions.contains("s")) p.actions.add("s");
-                            for (Chip c : Chip.chips)
-                                if (b.board[i][j].equals(c.getSymbol())) if (!c.actions.contains("s")) c.actions.add("s");
-                            for (Player p : Player.players)
-                                if (b.board[i - 1][j].equals(p.getRoundsString()))
-                                    if (!p.actions.contains("w")) p.actions.add("w");
-                            for (Chip c : Chip.chips)
-                                if (b.board[i - 1][j].equals(c.getSymbol()))
-                                    if (!c.actions.contains("w")) c.actions.add("w");
-                            booleanChecker = 1;
-                        }
-                        if (!b.board[i - 1][j + 1].matches("[①②③④⑤]")) {
-                            for (Player p : Player.players)
-                                if (b.board[i][j].equals(p.getRoundsString()))
-                                    if (!p.actions.contains("as")) p.actions.add("as");
-                            for (Chip c : Chip.chips)
-                                if (b.board[i][j].equals(c.getSymbol())) if (!c.actions.contains("as")) c.actions.add("as");
-                            for (Player p : Player.players)
-                                if (b.board[i - 1][j + 1].equals(p.getRoundsString()))
-                                    if (!p.actions.contains("dw")) p.actions.add("dw");
-                            for (Chip c : Chip.chips)
-                                if (b.board[i - 1][j + 1].equals(c.getSymbol()))
-                                    if (!c.actions.contains("dw")) c.actions.add("dw");
-                            booleanChecker = 1;
-                        }
-                        if (!b.board[i][j - 1].matches("[①②③④⑤]")) {
-                            for (Player p : Player.players)
-                                if (b.board[i][j].equals(p.getRoundsString()))
-                                    if (!p.actions.contains("d")) p.actions.add("d");
-                            for (Chip c : Chip.chips)
-                                if (b.board[i][j].equals(c.getSymbol())) if (!c.actions.contains("d")) c.actions.add("d");
-                            for (Player p : Player.players)
-                                if (b.board[i][j - 1].equals(p.getRoundsString()))
-                                    if (!p.actions.contains("a")) p.actions.add("a");
-                            for (Chip c : Chip.chips)
-                                if (b.board[i][j - 1].equals(c.getSymbol()))
-                                    if (!c.actions.contains("a")) c.actions.add("a");
-                            booleanChecker = 1;
-                        }
-                        if (!b.board[i][j + 1].matches("[①②③④⑤]")) {
-                            for (Player p : Player.players)
-                                if (b.board[i][j].equals(p.getRoundsString()))
-                                    if (!p.actions.contains("a")) p.actions.add("a");
-                            for (Chip c : Chip.chips)
-                                if (b.board[i][j].equals(c.getSymbol())) if (!c.actions.contains("a")) c.actions.add("a");
-                            for (Player p : Player.players)
-                                if (b.board[i][j + 1].equals(p.getRoundsString()))
-                                    if (!p.actions.contains("d")) p.actions.add("d");
-                            for (Chip c : Chip.chips)
-                                if (b.board[i][j + 1].equals(c.getSymbol()))
-                                    if (!c.actions.contains("d")) c.actions.add("d");
-                            booleanChecker = 1;
-                        }
-                        if (!b.board[i + 1][j - 1].matches("[①②③④⑤]")) {
-                            for (Player p : Player.players)
-                                if (b.board[i][j].equals(p.getRoundsString()))
-                                    if (!p.actions.contains("dw")) p.actions.add("dw");
-                            for (Chip c : Chip.chips)
-                                if (b.board[i][j].equals(c.getSymbol())) if (!c.actions.contains("dw")) c.actions.add("dw");
-                            for (Player p : Player.players)
-                                if (b.board[i + 1][j - 1].equals(p.getRoundsString()))
-                                    if (!p.actions.contains("as")) p.actions.add("as");
-                            for (Chip c : Chip.chips)
-                                if (b.board[i + 1][j - 1].equals(c.getSymbol()))
-                                    if (!c.actions.contains("as")) c.actions.add("as");
-                            booleanChecker = 1;
-                        }
-                        if (!b.board[i + 1][j].matches("[①②③④⑤]")) {
-                            for (Player p : Player.players)
-                                if (b.board[i][j].equals(p.getRoundsString()))
-                                    if (!p.actions.contains("w")) p.actions.add("w");
-                            for (Chip c : Chip.chips)
-                                if (b.board[i][j].equals(c.getSymbol())) if (!c.actions.contains("w")) c.actions.add("w");
-                            for (Player p : Player.players)
-                                if (b.board[i + 1][j].equals(p.getRoundsString()))
-                                    if (!p.actions.contains("s")) p.actions.add("s");
-                            for (Chip c : Chip.chips)
-                                if (b.board[i + 1][j].equals(c.getSymbol()))
-                                    if (!c.actions.contains("s")) c.actions.add("s");
-                            booleanChecker = 1;
-                        }
-                        if (!b.board[i + 1][j + 1].matches("[①②③④⑤]")) {
-                            for (Player p : Player.players)
-                                if (b.board[i][j].equals(p.getRoundsString()))
-                                    if (!p.actions.contains("aw")) p.actions.add("aw");
-                            for (Chip c : Chip.chips)
-                                if (b.board[i][j].equals(c.getSymbol())) if (!c.actions.contains("aw")) c.actions.add("aw");
-                            for (Player p : Player.players)
-                                if (b.board[i + 1][j + 1].equals(p.getRoundsString()))
-                                    if (!p.actions.contains("sd")) p.actions.add("sd");
-                            for (Chip c : Chip.chips)
-                                if (b.board[i + 1][j + 1].equals(c.getSymbol()))
-                                    if (!c.actions.contains("sd")) c.actions.add("sd");
-                            booleanChecker = 1;
-                        }
-                    } catch (Exception ignore) {
                     }
                 }
             }
         }
-        return booleanChecker == 1;
+        return booleanChecker;
+    }
+
+    public boolean reactionActions() {
+        Helper.clear();
+        b.drawBoard();
+        int booleanChecker = 0;
+        for (int i = 0; i < 9; i++) {
+            for (int j = 0; j < 9; j++) {
+                if (!b.board[i][j].matches("[①②③④⑤]")) {
+                    booleanChecker += reactionActionsHelper(i, j);
+
+                }
+            }
+        }
+
+        return booleanChecker > 0;
     }
 
     public void reaction(Player player) {
-        System.out.println(reactionActions());
+        if(seeIfSomeoneWon()) System.exit(0);
         if (!reactionActions()) return;
+        Helper.clear();
         b.drawBoard();
         String actionString = Helper.action(player.name + ": There are pieces touching, enter an action!");
         int actionNumber = actionString.compareTo("0");
         //Color order: r66 c51 b50 y73
-        System.out.println(actionNumber);
+
         switch (actionNumber) {
             case 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 -> {
                 if (actionNumber >= Chip.chips.size() || Chip.chips.get(actionNumber).actions.size() == 0) {
@@ -198,14 +123,23 @@ public class Game {
                 }
                 String action = Helper.removeFirstChar(actionString);
                 action = Chip.chips.get(actionNumber).actions.size() == 1 ?
-                        Chip.chips.get(actionNumber).actions.get(0) : action;
-                System.out.println(action);
-                System.out.println(Chip.chips.get(actionNumber).actions.size() + " : är det 1?");
+                        Chip.chips.get(actionNumber).actions.get(0) :
+                        Chip.chips.get(actionNumber).actions.contains(action) ||
+                                Chip.chips.get(actionNumber).actions.contains(Helper.revAction(action)) ? action : "";
                 int newCoordinates = b.actionToCoordinates(action, Chip.chips.get(actionNumber).coordinates)[0];
+                if (newCoordinates == 200) {
+                    clearActions(player);
+                    return;
+                }
                 int[] oldXY = b.translateCoordinates(Chip.chips.get(actionNumber).coordinates);
                 b.board[oldXY[0]][oldXY[1]] = b.boardMemory[oldXY[0]][oldXY[1]];
-                System.out.println("newCoordinates: " + newCoordinates);
-                if (newCoordinates != 200 && (newCoordinates < 11 || newCoordinates > 99 || newCoordinates % 10 == 0)) {
+                if (newCoordinates < 11 || newCoordinates > 99 || newCoordinates % 10 == 0) {
+                    if(actionNumber == 0) {
+                        Chip.chips.get(actionNumber).coordinates = 100;
+                        b.bringGoldChipBack(player);
+                        clearActions(player);
+                        return;
+                    }
                     Chip.chips.remove(actionNumber);
                     player.rounds++;
                     clearActions(player);
@@ -216,13 +150,11 @@ public class Game {
                         Chip.chips.get(actionNumber).getSymbol() : b.board[newXY[0]][newXY[1]];
 
                 Chip.chips.get(actionNumber).coordinates =
-                        b.board[newXY[0]][newXY[1]].equals(Chip.chips.get(actionNumber).getSymbol())?
-                        newCoordinates : Chip.chips.get(actionNumber).coordinates;
+                        b.board[newXY[0]][newXY[1]].equals(Chip.chips.get(actionNumber).getSymbol()) ?
+                                newCoordinates : Chip.chips.get(actionNumber).coordinates;
             }
             case 66, 51, 50, 73 -> {
                 actionNumber = (actionNumber == 66 ? 0 : (actionNumber == 51 ? 1 : (actionNumber == 50 ? 2 : 3)));
-                System.out.println(Player.players[actionNumber].actions.size());
-                for (String action : Player.players[actionNumber].actions) System.out.println(action);
                 if (Player.players[actionNumber].actions.size() == 0) {
                     clearActions(player);
                     return;
@@ -232,16 +164,23 @@ public class Game {
                         Player.players[actionNumber].actions.get(0) :
                         Player.players[actionNumber].actions.contains(action) ||
                                 Player.players[actionNumber].actions.contains(Helper.revAction(action)) ? action : "";
-                System.out.println(action);
-                System.out.println(Player.players[actionNumber].actions.size());
                 int newCoordinates = b.actionToCoordinates(action, Player.players[actionNumber].coordinates)[0];
                 if (newCoordinates == 200) {
                     clearActions(player);
                     return;
                 }
                 int[] oldXY = b.translateCoordinates(Player.players[actionNumber].coordinates);
+                if (newCoordinates < 11 || newCoordinates > 99 || newCoordinates % 10 == 0) {
+                    Player.players[actionNumber].onBoard = false;
+                    Player.players[actionNumber].rounds--;
+                    int[] xy = b.translateCoordinates(Player.players[actionNumber].coordinates);
+                    b.board[xy[0]][xy[1]] = b.boardMemory[xy[0]][xy[1]];
+                    Player.players[actionNumber].coordinates = 100;
+                    player.rounds++;
+                    clearActions(player);
+                    return;
+                }
                 int[] newXY = b.translateCoordinates(newCoordinates);
-                System.out.println(newCoordinates);
                 b.board[newXY[0]][newXY[1]] = Player.players[actionNumber].getRoundsString();
                 b.board[oldXY[0]][oldXY[1]] = b.boardMemory[oldXY[0]][oldXY[1]];
                 Player.players[actionNumber].coordinates = newCoordinates;
@@ -250,7 +189,6 @@ public class Game {
             }
         }
         clearActions(player);
-
     }
 
     public void clearActions(Player player) {
@@ -259,5 +197,23 @@ public class Game {
         reaction(player);
     }
 
-
+    public boolean seeIfSomeoneWon(){
+        int c = Chip.chips.get(0).coordinates;
+        Integer[] temp = {15, 59, 95, 51};
+        ArrayList<Integer> playerCoords = new ArrayList<>(Arrays.asList(temp));
+        if(playerCoords.contains(c)){
+            Helper.clear();
+            System.out.println(Player.players[playerCoords.indexOf(c)].name + " won!");
+            return true;
+        }
+        for(int i = 0; i < Player.players.length; i++){
+            if(!playerCoords.get(i).equals(Player.players[i].coordinates) &&
+                    playerCoords.contains(Player.players[i].coordinates)){
+                Helper.clear();
+                System.out.println(Player.players[i].name + " won!");
+                return true;
+            }
+        }
+        return false;
+    }
 }

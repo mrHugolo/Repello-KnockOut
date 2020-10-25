@@ -37,6 +37,31 @@ public abstract class Helper {
         return scan.nextLine();
     }
 
+    public static String directionToAction(int x, int y){
+        switch (x){
+            case -1 -> {
+                if(y == -1) return "sd";
+                else if(y == 0) return "s";
+                else if(y == 1) return "sa";
+            }
+            case 0 -> {
+                if(y == -1) return "d";
+                else if(y == 1) return "a";
+            }
+            case 1 -> {
+                if(y == -1) return "wd";
+                else if(y == 0) return "w";
+                else if(y == 1) return "wa";
+            }
+        }
+        return "";
+    }
+
+    public static void addIfNotInList(ArrayList<String> list, String direction){
+        System.out.println(direction);
+        if(!list.contains(direction)) list.add(direction);
+    }
+
     public static void clear(){
         System.out.println("\n".repeat(30));
     }
@@ -48,6 +73,6 @@ public abstract class Helper {
     }
 
     public static String revAction(String action) {
-        return action.length() == 1 ? action : "" + action.charAt(1) + action.charAt(0);
+        return action.length() <= 1 ? action : "" + action.charAt(1) + action.charAt(0);
     }
 }
